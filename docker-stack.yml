@@ -12,7 +12,7 @@ services:
         target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      ELASTIC_PASSWORD: password
+      ELASTIC_PASSWORD: voyager
       # Use single node discovery in order to disable production mode and avoid bootstrap checks
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
@@ -25,7 +25,7 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:7.10.0
     ports:
-    - "5044:5044"
+      - "5044:5044"
       - "5000:5000"
       - "9600:9600"
     configs:
