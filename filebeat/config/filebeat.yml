@@ -1,0 +1,28 @@
+# input 설정
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/nginx/*.log
+  document_type: nginx
+# Multiple Log를 수집하는 경우, 아래와 같이 추가로 입력
+# - type: log
+#   enabled: true
+#   paths: []
+
+# output 설정
+output.logstash:
+  enabled: true
+  hosts: ["logstash:5000"]
+  # FIXME: Cannot reach the hosts of Logstash
+
+# output.elasticsearch:
+#   hosts: ["http://elasticsearch:9200"]
+#   username: "elastic"
+#   password: "changeme"
+
+# filebeat와 함께 제공된 샘플 Kibana 대시보드를 사용하는 경우
+# setup.kibana:
+#   host: "http://kibana:5601"
+#   username: "voyager"
+#   password: "changeme"

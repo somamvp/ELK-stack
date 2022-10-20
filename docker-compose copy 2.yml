@@ -1,28 +1,47 @@
 version: '3.2'
 services:
-  nginx:
-    image: nginx
+  db:
+    # platform: linux/amd64
+    image: mysql:latest
+    container_name: local-db
     ports:
-      - "8080:80"
+      - "3306:3306"
+    # restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      TZ: Asia/Seoul
     volumes:
-    #   - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/log:/var/log/nginx
+      - ./db:/var/lib/mysql
     networks:
       - elk
 
-  filebeat:
-    build: ./filebeat
-    entrypoint: "filebeat -e -strict.perms=false"
-    volumes:
-      - ./filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml
-      - ./nginx/log:/var/log/nginx
+  redis:
+    image: redis:alpine
+    command: redis-server
+    container_name: redis_boot
+    hostname: redis_boot
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    ports:
+      - "6379:6379"
     networks:
       - elk
+
+  spring:
+    container_name: voyager-backend-dev
+    build: /Users/juwon/IdeaProjects/teamMVP
+    ports:
+      - "8080:8080"
+    environment:
+      - "PROFILE=docker-prod"
+    volumes:
+      - ./log:/home/spring-docker/deploy/log
     depends_on:
-      - nginx
-      - logstash
-      - elasticsearch
-      - kibana
+      - db
+      - redis
+    networks:
+      - elk
 
   elasticsearch:
     build:
